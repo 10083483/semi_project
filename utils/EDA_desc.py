@@ -56,46 +56,55 @@ def boxoffice(date_start,date_end1):
     여기서 얻은 거리두기 시기, 그리고 완화 이후 시기의 영화별 누적 매출액,누적 관객 수를 그래프화하기 위해 아래와 같이 코딩하였습니다.
     ```
     categories = ['During Covid19 Restriction', 'After Covid19 Restriction']
-    values = [BeforeCOVID19_1.sum()['salesAmt'],AfterCOVID19_1.sum()['salesAmt']] # dataframe내의 모든 누적 매출액의 총합
-    fig, ax = plt.subplots()
-    ax.bar(categories, values)
+    values = [ round(BeforeCOVID19_1.sum()['salesAmt']/1000000000, 1),round(AfterCOVID19_1.sum()['salesAmt']/1000000000, 1)]
+    fig = plt.figure()
+    ax1 = fig.add_subplot(121)
+    ax1.bar(categories, values)
     plt.xlabel('Period')
-    plt.ylabel('Sales Amount in trillion')
+    plt.ylabel('Sales Amount in billion')
     plt.title('Sales Amount')
     plt.text(-0.33,values[0],str(values[0]), color='black', fontsize=14)
-    plt.text(0.64, values[1],str(values[1]), color = 'black', fontsize = 14)#str(format(values[1], ","))
+    plt.text(0.64, values[1],str(values[1]), color = 'black', fontsize = 14)
+    plt.xticks(rotation=10)
+    
     st.pyplot(fig)
     ```
 		'''
 		)
+
     BeforeCOVID19_1 =pd.read_csv('data/1.boxofficeD.csv',encoding='utf-8-sig')
     AfterCOVID19_1 =pd.read_csv('data/1.boxofficeA.csv',encoding='utf-8-sig')
     #st.dataframe(BeforeCOVID19_1)
     BeforeCOVID19_1 = BeforeCOVID19_1.astype({'salesAmt':'float','audiCnt':'float'})
     AfterCOVID19_1 = AfterCOVID19_1.astype({'salesAmt':'float','audiCnt':'float'})
-    #g1-1
+    
+    #####
     categories = ['During Covid19 Restriction', 'After Covid19 Restriction']
-    values = [BeforeCOVID19_1.sum()['salesAmt'],AfterCOVID19_1.sum()['salesAmt']]
-    fig, ax = plt.subplots()
-    ax.bar(categories, values)
+    values = [ round(BeforeCOVID19_1.sum()['salesAmt']/1000000000, 1),round(AfterCOVID19_1.sum()['salesAmt']/1000000000, 1)]
+    fig = plt.figure()
+    ax1 = fig.add_subplot(121)
+    ax1.bar(categories, values)
     plt.xlabel('Period')
-    plt.ylabel('Sales Amount in trillion')
+    plt.ylabel('Sales Amount in billion')
     plt.title('Sales Amount')
     plt.text(-0.33,values[0],str(values[0]), color='black', fontsize=14)
-    plt.text(0.64, values[1],str(values[1]), color = 'black', fontsize = 14)#str(format(values[1], ","))
-    st.pyplot(fig)
-
-    #g1-2
+    plt.text(0.64, values[1],str(values[1]), color = 'black', fontsize = 14)
+    plt.xticks(rotation=10)
+    
+    ax2 = fig.add_subplot(122)
     categories2 = ['During Covid19 Restriction', 'After Covid19 Restriction']
-    values2 = [BeforeCOVID19_1.sum()['audiCnt']/1000000,AfterCOVID19_1.sum()['audiCnt']/1000000]
-    fig2, ax2 = plt.subplots()
+    values2 = [ round(BeforeCOVID19_1.sum()['audiCnt']/1000000, 1),round(AfterCOVID19_1.sum()['audiCnt']/1000000, 1)]
     ax2.bar(categories2 ,values2)
     plt.xlabel('Period')
-    plt.ylabel('audience count in billion')
+    plt.ylabel('audience count in million')
     plt.title('Audience Count')
     plt.text(-0.33,values2[0],str(values2[0]), color='black', fontsize=14)
     plt.text(0.64, values2[1],str(values2[1]), color = 'black', fontsize = 14)  
-    st.pyplot(fig2)
+    plt.xticks(rotation=10)
+    st.pyplot(fig)
+
+    
+    ####
 
 	
     st.header('2. 코로나19로 인한 사회적 거리두기 기간과 그 이후의 오프라인 영화 프로모션 기사보도 추이 ')
