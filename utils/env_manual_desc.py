@@ -31,7 +31,7 @@ def desc():
             'conda deactivate'으로 가상환경 종료
             ''')
     st.image(img31)
-    st.info('파일 디렉토리 앞의 ()가 가상환경 이름으로 나오면 가상환경에 진입한 상태이다')
+    st.info('파일 디렉토리 앞의 ()가 가상환경 이름으로 나오면 가상환경에 진입한 상태이다', icon="ℹ️")
     st.image(img32)
     
     st.subheader('4. 가상환경 삭제')

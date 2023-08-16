@@ -3,8 +3,7 @@ from utils import pjr_diagram_desc as dgrd
 
 
 def app():
-	st.write('''
-		### 
-		'''
-		)
+    st.header('프로젝트 diagram')
+    dgrd.desc()
+
 

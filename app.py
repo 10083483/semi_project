@@ -5,7 +5,7 @@ from page import pjr_diagram as dgr
 from page import EDA 
 from page import intro
 
-st.title('Project')
+#st.title('Project')
 
 item_list = ['item0','item1', 'item2', 'item3', 'item4']
 
