@@ -6,4 +6,3 @@ def app():
     st.header('프로젝트 diagram')
     dgrd.desc()
 
-

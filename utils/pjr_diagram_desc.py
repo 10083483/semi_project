@@ -1,8 +1,6 @@
 import streamlit as st
-
+from PIL import Image
 def desc():
 
-	st.write('''
-	### 
-
-	''')
+    img = Image.open('data/prj_diagram.png')
+    st.image(img)
