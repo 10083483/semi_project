@@ -8,16 +8,55 @@ import numpy as np
 def desc():
 
     st.title('처리 및 분석')
-    st.header('1. boxoffice')
+    st.header('1. 코로나19로 인한 사회적 거리두기 기간과 그 이후의 영화관 매출액과 관객수 변화')
+    st.write('''
+    먼저, 하기와 같이 코로나19로 인한 사회적 거리두기 기간을 구분하였습니다. 
     
-    BeforeCOVID19_1 =pd.read_csv('data/1.boxofficeD.csv',encoding='utf-8-sig')
-    AfterCOVID19_1 =pd.read_csv('data/1.boxofficeA.csv',encoding='utf-8-sig')
-    #st.dataframe(BeforeCOVID19_1)
-    BeforeCOVID19_1 = BeforeCOVID19_1.astype({'salesAmt':'float','audiCnt':'float'})
-    AfterCOVID19_1 = AfterCOVID19_1.astype({'salesAmt':'float','audiCnt':'float'})
+            During Covid19 Restriction: 사회적 거리두기 발효일(21.3.1)부터 종료 전일(22.4.17)까지 약 412일
+    After Covid19 Restriction: 사회적 거리두기 종료일(22.4.18)부터 23.5.4까지 약 412일
+
+이후, 영화진흥위원회(KOFIC)의 오픈 API를 활용하여 코로나19 사회적 거리두기 기간과, 거리두기가 완화된 이후의 현재까지의 일간 박스오피스를 취합해 기간중 영화별 누적 관객 수, 누적 매출액 등을 수집하였습니다
+
+		'''
+		)
+    st.write('''
+             ```
+def boxoffice(date_start,date_end1):
+
+    yourkey='f5eef3421c602c6cb7ea224104795888'
+    date_end = datetime.datetime.strptime(date_end1, '%y%m%d')
+    date_str = date_string(date_end)
+
+    movie_list = []
+    date_list =[]
+    
+    while date_str != date_start:
+        date_end = date_end - timedelta(days=1)
+        date_str = date_string(date_end)
+        #print(date_str)
+        url = 'http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key='+yourkey+'&targetDt='+date_str
+        resp = requests.get(url)
+        sh_date=resp.json()['boxOfficeResult']['showRange'][:8] #박스오피스 일자 추출
+        date_list.append(sh_date)
+        data = resp.json()['boxOfficeResult']['dailyBoxOfficeList']# 일간 박스오피스 추출
+        movie_list.extend(data) #movie_list에추가
+
+    df = pd.DataFrame(movie_list)
+    df = df.astype({'salesAmt':'float','audiCnt':'float'})
+    pd.options.display.float_format = '{:.1f}'.format
+    mydict = {"salesAmt":"sum", "audiCnt":"sum"}    #컬럼이름(키 값)이 같으면 안됨
+    results=df.groupby("movieNm").agg(mydict)   # 영화이름(movieNm)기준으로 묶어서 mydict 안의 계산을 칼럼별로 실행
+    results.insert(0,"startDate",date_start)    #0열에 startDate라는 열을 집어넣고 값을 date_start로 저장
+    results.insert(1,"endDate",date_list[0])
+    df.to_csv(csvFileName, mode='a', encoding='utf-8', index=False) #추출 결과를 csv파일로 저장
+    return results
+    ```
+    ''')
+    st.write('''
+    여기서 얻은 거리두기 시기, 그리고 완화 이후 시기의 영화별 누적 매출액,누적 관객 수를 그래프화하기 위해 아래와 같이 코딩하였습니다.
+    ```
     categories = ['During Covid19 Restriction', 'After Covid19 Restriction']
-    values = [BeforeCOVID19_1.sum()['salesAmt'],AfterCOVID19_1.sum()['salesAmt']]
-    #g1-1
+    values = [BeforeCOVID19_1.sum()['salesAmt'],AfterCOVID19_1.sum()['salesAmt']] # dataframe내의 모든 누적 매출액의 총합
     fig, ax = plt.subplots()
     ax.bar(categories, values)
     plt.xlabel('Period')
@@ -26,12 +65,29 @@ def desc():
     plt.text(-0.33,values[0],str(values[0]), color='black', fontsize=14)
     plt.text(0.64, values[1],str(values[1]), color = 'black', fontsize = 14)#str(format(values[1], ","))
     st.pyplot(fig)
-    st.write('''jdghjyjt''')
-	
+    ```
+		'''
+		)
+    BeforeCOVID19_1 =pd.read_csv('data/1.boxofficeD.csv',encoding='utf-8-sig')
+    AfterCOVID19_1 =pd.read_csv('data/1.boxofficeA.csv',encoding='utf-8-sig')
+    #st.dataframe(BeforeCOVID19_1)
+    BeforeCOVID19_1 = BeforeCOVID19_1.astype({'salesAmt':'float','audiCnt':'float'})
+    AfterCOVID19_1 = AfterCOVID19_1.astype({'salesAmt':'float','audiCnt':'float'})
+    #g1-1
+    categories = ['During Covid19 Restriction', 'After Covid19 Restriction']
+    values = [BeforeCOVID19_1.sum()['salesAmt'],AfterCOVID19_1.sum()['salesAmt']]
+    fig, ax = plt.subplots()
+    ax.bar(categories, values)
+    plt.xlabel('Period')
+    plt.ylabel('Sales Amount in trillion')
+    plt.title('Sales Amount')
+    plt.text(-0.33,values[0],str(values[0]), color='black', fontsize=14)
+    plt.text(0.64, values[1],str(values[1]), color = 'black', fontsize = 14)#str(format(values[1], ","))
+    st.pyplot(fig)
+
     #g1-2
     categories2 = ['During Covid19 Restriction', 'After Covid19 Restriction']
     values2 = [BeforeCOVID19_1.sum()['audiCnt']/1000000,AfterCOVID19_1.sum()['audiCnt']/1000000]
-    st.write(values)
     fig2, ax2 = plt.subplots()
     ax2.bar(categories2 ,values2)
     plt.xlabel('Period')
@@ -40,7 +96,7 @@ def desc():
     plt.text(-0.33,values2[0],str(values2[0]), color='black', fontsize=14)
     plt.text(0.64, values2[1],str(values2[1]), color = 'black', fontsize = 14)  
     st.pyplot(fig2)
-    st.write('''jdghjyjt''')
+
 	
     st.header('2. 코로나19로 인한 사회적 거리두기 기간과 그 이후의 오프라인 영화 프로모션 기사보도 추이 ')
     
