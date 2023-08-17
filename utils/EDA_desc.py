@@ -59,6 +59,8 @@ def boxoffice(date_start,date_end1):
     values = [ round(BeforeCOVID19_1.sum()['salesAmt']/1000000000, 1),round(AfterCOVID19_1.sum()['salesAmt']/1000000000, 1)]
     fig = plt.figure()
     ax1 = fig.add_subplot(121)
+    fig.subplots_adjust(wspace=0.3)
+    
     ax1.bar(categories, values)
     plt.xlabel('Period')
     plt.ylabel('Sales Amount in billion')
@@ -83,6 +85,8 @@ def boxoffice(date_start,date_end1):
     values = [ round(BeforeCOVID19_1.sum()['salesAmt']/1000000000, 1),round(AfterCOVID19_1.sum()['salesAmt']/1000000000, 1)]
     fig = plt.figure()
     ax1 = fig.add_subplot(121)
+    fig.subplots_adjust(wspace=0.3)
+    
     ax1.bar(categories, values)
     plt.xlabel('Period')
     plt.ylabel('Sales Amount in billion')
@@ -101,9 +105,8 @@ def boxoffice(date_start,date_end1):
     plt.text(-0.33,values2[0],str(values2[0]), color='black', fontsize=14)
     plt.text(0.64, values2[1],str(values2[1]), color = 'black', fontsize = 14)  
     plt.xticks(rotation=10)
-    st.pyplot(fig)
 
-    
+    st.pyplot(fig)
     ####
 
 	
