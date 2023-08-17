@@ -180,8 +180,94 @@ def boxoffice(date_start,date_end1):
     
     st.pyplot(fig_jw)
 	
-    st.header('3. ')
+    st.header('3. 코로나19로 인한 사회적 거리두기 기간과 그 이후의 OTT 서비스 사용량 변화 추이')
+    st.write('''
+    코로나19로 인한 사회적 거리두기 기간을 구분.
+    ```
+    코로나19 사회적 거리두기 발효일: 2021년 3월 1일
+    코로나19 사회적 거리두기 종료일: 2022년 4월 18일
+    ```
+    사회적 거리두기 발효일 과 종료일 사이 기간동안의 OTT 서비스 가입자 및 사용자 변화 추이를 알아봤습니다.
+    수집한 자료에서 날짜, OTT 서비스 맴버십 가입자, 수입(매출) 을 기준으로 구분했습니다.
+         '''
+    )
+    st.write('''
+    ```
+    csv_file_path = 'data/netflix_revenue.csv' # CSV 파일 경로 설정
+    df = pd.read_csv(csv_file_path) # CSV 파일 읽기
+    df['Date'] = pd.to_datetime(df['Date'], format='%d-%m-%Y') 
+     # 날짜(Date)를 "DD-MM-YYYY" 형식으로 파싱
+    ```
+    ''')
+    st.write('''
+    ```그래프 그리기
+    fig_sk, ax1 = plt.subplots(figsize=(10, 6))```
     
+    Global Revenue 그래프 그리기 (ax1에 연결)
+    ```ax1.plot(df['Date'], df['Global Revenue'], color='red', marker='o', label='Global Revenue')
+    ax1.set_xlabel('Date')
+    ax1.set_ylabel('Global Revenue', color='red')
+    ax1.tick_params(axis='y', labelcolor='red')```
+
+    Netflix Streaming Memberships 그래프 그리기 (ax2에 연결)
+    ```ax2 = ax1.twinx()
+    ax2.plot(df['Date'], df['Netflix Streaming Memberships '], color='blue', marker='o', label='Netflix Streaming Memberships')
+    ax2.set_ylabel('Netflix Streaming Memberships', color='blue')
+    ax2.tick_params(axis='y', labelcolor='blue')```
+
+    그래프 타이틀 설정
+    ```plt.title('Netflix Revenue and Memberships Over Time')```
+
+    범례 표시
+    ```lines = ax1.get_lines() + ax2.get_lines()
+    labels = [line.get_label() for line in lines]
+    plt.legend(lines, labels, loc='upper left')```
+
+    그래프 표시
+    ```plt.tight_layout()
+    plt.grid(True)
+    plt.show()
+    st.pyplot(fig_sk)```
+    ''')
+
+      # CSV 파일 경로 설정
+    csv_file_path = 'data/netflix_revenue.csv'
+
+    # CSV 파일 읽기
+    df = pd.read_csv(csv_file_path)
+
+    # 날짜(Date)를 "DD-MM-YYYY" 형식으로 파싱
+    df['Date'] = pd.to_datetime(df['Date'], format='%d-%m-%Y')
+
+    # 그래프 그리기
+    fig_sk, ax1 = plt.subplots(figsize=(10, 6))
+
+    # Global Revenue 그래프 그리기 (ax1에 연결)
+    ax1.plot(df['Date'], df['Global Revenue'], color='red', marker='o', label='Global Revenue')
+    ax1.set_xlabel('Date')
+    ax1.set_ylabel('Global Revenue', color='red')
+    ax1.tick_params(axis='y', labelcolor='red')
+
+    # Netflix Streaming Memberships 그래프 그리기 (ax2에 연결)
+    ax2 = ax1.twinx()
+    ax2.plot(df['Date'], df['Netflix Streaming Memberships '], color='blue', marker='o', label='Netflix Streaming Memberships')
+    ax2.set_ylabel('Netflix Streaming Memberships', color='blue')
+    ax2.tick_params(axis='y', labelcolor='blue')
+
+    # 그래프 타이틀 설정
+    plt.title('Netflix Revenue and Memberships Over Time')
+
+    # 범례 표시
+    lines = ax1.get_lines() + ax2.get_lines()
+    labels = [line.get_label() for line in lines]
+    plt.legend(lines, labels, loc='upper left')
+
+    # 그래프 표시
+    plt.tight_layout()
+    plt.grid(True)
+    plt.show()
+    st.pyplot(fig_sk)
+        
     st.header('4. 참고 자료')
     st.write('''
              ```
